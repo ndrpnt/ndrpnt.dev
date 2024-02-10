@@ -1,0 +1,6 @@
+_site/
+node_modules/
+
+# Prettier does not respect global gitignore files, so I have to put my
+# personal rule here.
+..*

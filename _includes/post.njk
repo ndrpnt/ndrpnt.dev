@@ -1,0 +1,20 @@
+---
+layout: base
+---
+
+<div class="post">
+	<h1>{{ title }}</h1>
+	<div class="post-date"><time datetime="{{ page.date | htmlDateString }}">{{ page.date | readableDate }}</time></div>
+	{{ content | safe }}
+</div>
+
+{%- if collections.posts %}
+{%- set previousPost = collections.posts | getPreviousCollectionItem %}
+{%- set nextPost = collections.posts | getNextCollectionItem %}
+{%- if nextPost or previousPost %}
+<ul class="post-neighbors">
+	{%- if previousPost %}<li>Older post: <a href="{{ previousPost.url }}">{{ previousPost.data.title }}</a></li>{% endif %}
+	{%- if nextPost %}<li>Newer post: <a href="{{ nextPost.url }}">{{ nextPost.data.title }}</a></li>{% endif %}
+</ul>
+{%- endif %}
+{%- endif %}

@@ -1,0 +1,13 @@
+[build]
+command = "npm run build"
+publish = "_site"
+
+[[headers]]
+for = "/*"
+[headers.values]
+X-Content-Type-Options = "nosniff"
+X-Frame-Options = "DENY"
+Permissions-Policy = "autoplay=(), camera=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), publickey-credentials-get=()"
+Content-Security-Policy = "default-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; img-src 'self'; media-src 'none'; object-src 'none'; script-src 'none'; style-src 'self'"
+Referrer-Policy = "no-referrer, strict-origin-when-cross-origin"
+Strict-Transport-Security = "max-age=15768000"

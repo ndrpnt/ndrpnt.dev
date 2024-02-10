@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="{{ metadata.language }}">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+		<base href="{{ page.url }}">
+		<link rel="canonical" href="{{ metadata.url }}{{ page.url }}">
+
+		<title>{{ title or metadata.title }}</title>
+		<meta name="description" content="{{ description or metadata.description }}">
+
+		<meta property="og:url" content="{{ metadata.url }}{{ page.url }}">
+		<meta property="og:type" content="website">
+		<meta property="og:title" content="{{ title or metadata.title }}">
+		<meta property="og:image" content="">
+		<meta property="og:image:alt" content="">
+		<meta property="og:description" content="{{ description or metadata.description }}">
+		<meta property="og:site_name" content="{{ metadata.site_name }}">
+		<meta property="og:locale" content="{{ metadata.locale }}">
+		<meta property="article:author" content="{{ metadata.author }}">
+
+		<link rel="icon" href="/favicon.ico" sizes="any">
+		<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+		<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+		<link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
+		<link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16">
+		<link rel="manifest" href="/site.webmanifest">
+
+		<link rel="alternate" href="/posts/feed.xml" type="application/atom+xml" title="{{ metadata.title }}">
+		<link rel="alternate" href="/posts/feed.json" type="application/json" title="{{ metadata.title }}">
+
+		{%- css %}{% include "../css/index.css" %}{% endcss %}
+		{%- css %}{% include "../css/prism-material-dark.css" %}{% endcss %}
+		<link rel="stylesheet" href="{% getBundleFileUrl "css" %}">
+	</head>
+	<body>
+		<header>
+			<a href="/" class="logo">{{ metadata.title }}</a>
+			<nav>
+				<ul class="nav">
+				{%- for entry in collections.all | eleventyNavigation %}
+					<li><a href="{{ entry.url }}"{% if entry.url == page.url %} aria-current="page"{% endif %}>{{ entry.title }}</a></li>
+				{%- endfor %}
+				</ul>
+			</nav>
+		</header>
+		<main>
+			{{ content | safe }}
+		</main>
+		<footer>
+			<ul class="social" aria-label="social links">
+				<li><a href="/posts/feed.xml" rel="alternate" type="application/rss+xml">{% include 'icons/social-rss.svg' %}</a></li>
+				<li><a href="https://github.com/ndrpnt/ndrpnt.dev" rel="me">{% include 'icons/social-github.svg' %}</a></li>
+				<li><a href="https://www.linkedin.com/in/ndrpnt" rel="me">{% include 'icons/social-linkedin.svg' %}</a></li>
+			</ul>
+		</footer>
+	</body>
+</html>
