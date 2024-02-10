@@ -1,6 +1,7 @@
 _site/
 node_modules/
 
-# Prettier does not respect global gitignore files, so I have to put my
-# personal rule here.
-..*
+# Prettier and 11ty are not aware of global gitignore files. Moreover 11ty
+# incorrectly handles `..*` pattern, so I have to explicitly ignore personal
+# files here.
+..secrets/
