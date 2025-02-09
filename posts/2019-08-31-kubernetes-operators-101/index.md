@@ -81,12 +81,10 @@ By building upon Kubernetes (custom) resources, operators benefit from [common f
 >
 > — [Kubernetes documentation](https://kubernetes.io/docs/concepts/architecture/controller/)
 
+Controllers are control loops (i.e. non-terminating reconciliation loops) that continuously watch the state of the cluster, then take actions to move the observed state of the world closer to the desired state. Besides, a controller persists the actual state by updating the status field of the corresponding resource. Custom controllers and built-in Kubernetes controllers (running in the kube-controller-manager) work exactly the same way.
+
  reconciliation loops
 In other words, controllers are non-terminating programs that continuously query the current and desired state of the cluster and then take actions to move the current state closer to the desired state.
-
-Besides, a controller persists the actual state by updating the status field of the corresponding resource.
-
-Custom controllers and built-in Kubernetes controllers (running in the kube-controller-manager) work the same way.
 
 Of course the actual implementation has to be smarter, to prevent infinite loops hogging CPU and flooding the API server with requests.
 

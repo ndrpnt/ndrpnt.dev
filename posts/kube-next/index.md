@@ -74,6 +74,10 @@ The [Rook](https://github.com/rook/rook) framework provides components for writi
 
 SDKs are available for numerous languages, e.g. [Elixir](https://github.com/coryodaniel/bonny), [.NET](https://github.com/buehler/dotnet-operator-sdk), [Java](https://github.com/java-operator-sdk/java-operator-sdk), [Rust](https://github.com/kube-rs/kube)
 
+[Achilles SDK](https://github.com/reddit/achilles-sdk), opinionated, build reconcilers in the form of FSM, provides logging, metrics, rate-limiting, etc. out of the box.
+
+[Reconciler.io](https://github.com/reconcilerio/runtime), opinionated framework built on controller-runtime. Strong focus on unit testing.
+
 ### Libraries
 
 [Client-go](https://github.com/kubernetes/client-go) is the official Go Kubernetes client. It is used in sample-controller and Kubernetes core. It implements a caching mechanism, which drastically reduces direct reads from the kube-apiserver.

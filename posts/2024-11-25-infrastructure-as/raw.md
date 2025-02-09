@@ -1,8 +1,15 @@
----
-title: Infrastructure as…
-description: "Infrastructure as…"
-date: 2024-11-25
----
+À la découverte d'une nouvelle base de code d’infrastructure, il m'est arrivé d'être frappé par la complexité disproportionné et la fragilité du code et sa fonctionnalité
+
+Il y a un décalage entre l'effort apparent qui a été mis à écrire ce code et sa fragilité, la difficulté à le faire évoluer et à l'adapter.
+
+Il ne s'agit pas de complexité attendue dans la vie d'une codebase: changement de requirements, manque d'effort de maintient à jour, perte de connaissance de l'équipe. Il ne s'agit pas non plus de complexité dûe à un manque de compétence de l'équipe: mauvais choix d'outils, usage inadapté
+L'effort de reflexion est évident mais qui donne un résultat pire qu'un code "à plat"
+
+J'en suis venu à me demander si le problème ne vient pas de traiter l'IaC comme on traite un programme ?
+
+Tout nous pousse à aborder le code d'infrastructure comme un programme classique, mais cette approche semble inadaptée.
+
+Dans ce billet, le "code d’infrastructure" désigne les fichiers texte qui, une fois exécutés ou interprétés, permettent d’interagir avec les composants matériels, logiciels, réseaux et systèmes qui soutiennent le fonctionnement d’un système d’information.
 
 ## Infrastructure as Code
 
@@ -18,11 +25,15 @@ Le concept de _Configuration as Data_ reconnaît cet état de fait, et explicite
 
 On peut trouver une explication du concept de _Configuration as Data_ et des qualités recherchées dans [la documentation `kpt`](https://github.com/kptdev/kpt/blob/main/docs/design-docs/06-config-as-data.md) ainsi que dans [cette vidéo](https://youtu.be/kvdKvcfYrm8). Les ressources précédentes restent cependant abstraites, puisque qu'il ne s'agit pas d'un outil, mais de prendre du recul, d'expliciter, et de théoriser un état de fait.
 
+À noter que plus le code d'infrastructure
+
 ## Infrastructure as a Program
 
 Mise en évidence de tendances naturelles constatées de manière répétée :
 
 * À complexifier des inputs des variables imbriqués proche d'un DSL
+  * On veut créer un domaine avec ses propres concepts
+  * On est des craftsmen, on fait du sur-mesure pour notre use-case. Ça serait trop simple de se contenter d'utiliser les outils dans leur happy path, de faire des script ou bien des listes "à plat"
 * À créer des indirections qui augmentent la complexité sans rien apporter en retour
   * Parce que DRY: on rend générique pour réutiliser
   * Parce que dans un programme, contrairement à un script, on découpe: petite functions, petits fichiers, petits modules unitaires, single-responsibility principle
@@ -68,24 +79,68 @@ Horror stories vécues, conséquences d'une mentalité (programmation) en décal
 ### Abstraction considered harmful?
 
 > Abstraction manages complexity to simplify usage (you don't care about the implementation).
+> It generalizes the concrete, abridges, or summarizes.
 
 * You don't wan't to abstract:
   * Consumers/users are interested about the implementation. You want you abstractions to leak. When working on infrastructure, the concrete underlying/internal resources is all that matter.
   * No serious project can be satisfied with "a Kubernetes cluster that just works". You want a Kubernetes cluster that integrates with your authentication system, that checks your security boxes, that you feel confident running day 2 operations (monitoring, upgrading, repairing, …), that you can explain, evangelize and document, in which your are proficient in to accommodate for new requirements, …
   * Once again specialisation is the answer, but only makes sense within a given organization. Then it's not really an "abstraction", as much as it is a concrete opinionated implementation, a paved road/golden path.
+  * Modules or roles are used to modularize, to devide and conquer. The goal is to make the complexity manageable, not to make it disappear. It is about organizing code rather than creating a new universe/domain at a different level of abstractions.
 * Examples
   * Depend on a module in Terraform, the plan shows you every single attribute of every single resource. When an error happen, it happen at the individual resource level, not at the module level.
   * Depend on a role in Ansible, the execution show you the result of every single task. When an error happen you have direct vision of the failed task.
+
+### What about indirection?
+
+> Indirection adds complexity to allow for flexibility (you can swap the implementation).
+> It is a necessary evil used to create pluggable systems. [^1]
+
+[^1]: https://web.archive.org/web/20151217104831/https://zedshaw.com/archive/indirection-is-not-abstraction/
+
+* Since tools expose their internals, swapping implementation is not transparent.
+* Linting, policy enforcement, and testing are often "white-box", that is, they adhere to the implementation. Hence, changing implementation is not transparent and might break your CI in many ways.
+* Plan, dry-run, or even `git diff` are central to many tools and workflows as a way to reduce risk when shipping infrastructure changes. They make implementation changes appear, regardless of whether they are behind an indirection, making it not transparent.
+* As stated above, with IaC we don't just care about the end result, we also care about the actual building blocks used (for run, finops, security, and other reasons). Thus, while an indirection might ease code change (at the cost of greater complexity, let's say it again), it does not make it transparent.
+
+### Abstractions in (infrastructure) programming
+
+![abstractions in application vs. infrastructure code](./abstractions.excalidraw.png)
+
+* In application code, higher-level (more abstract) concepts are built on lower-level (more concrete) ones, without worrying about their implementation.
+* In infrastructure code, you can group resources to divide-and-conquer but you don't create concepts that let you reason at a higher level of abstraction
+  * In Terraform, abstractions that can be built upon are limited to provider resources and stdlib functions
+  * In Ansible: modules
+* This may not be a hard rule but I believe it's generally true
 
 ### Testing
 
 * Can't test at the same abstraction level. When talking about end-user specialized modules (i.e. not generic library modules) deploying basic infrastructure (i.e. not an application like FaaS, S3 website, or an image containing an application), the ideal Terraform unit test framework would end up being your Terraform code itself. That is, you want to assert/verify that exactly the resources you want are created, in exactly the state you want. Well, that is what you already described in your Terraform code. Maybe writing the same thing in a different syntax reduces the chance to make mistakes but that's about it.
 * Terraform code as well as code to generate Kubernetes manifests have the interesting property of serializing their complete behavior (except some things like `ignore_changes` or provisioner blocks) in the form of Terraform plan or rendered Kubernetes manifests respectively. That means that refactoring is extremely safe: if the plan indicates that no change will happen, or if git diffing the rendered manifests yields an empty result, then it is safe to assume that the refactor didn't affect the behavior of the code. Traditional programs don't offer that kind of guarantees, hence we test them to build confidence that refactoring didn't unexpectedly negatively affect behavior (= cause a regression). Unlike the IaC examples though, only a finite number of states are explored with automated verification, hence we build confidence but can't guarantee that no regression happened.
 
-## Templates instead of library
+### Half-dev half-ops (pas convaincu de ce que je raconte là dedans)
 
-* As IaC behaves more like configuration than, libraries are largely inappropriate
+* Les autheurs/mainteneurs de code d'infrastructure, souvent appelés (ingénieurs) DevOps mais c'est un autre sujet, ne sont souvent ni dev, ni ops
+* On ramène des "bonne pratiques" de dev, sans vraiment comprendre ni le _why_, ni le contexte. Du coup quand on traduit ça sur du code d'infrastructure ça par en couille
+
+## Wrong way to componentize/distribute ?
+
+* Je pense que les librairies high-level ne sont pas la réponse dans le monde Ansible (rôles), Terraform (modules), GitLab (CI/CD components), GitHub (Actions), et Kubernetes (Charts).
+* Par contre des librairies low-level sont utiles dans le monde Ansible (module), Terraform (providers), GitLab (?), GitHub (Actions), Kubernetes (cdk8s+, ?)
+* Seul ce second type de librairies permet d'abstraire de la complexité, d'encapsuler des règles métier, de composer des briques entre elles, de garder la maîtrise de son infrastructure
+* Given what we said about abstraction/encapsulation, libraries
+* Adding to that the shortcomings of many infrastructure languages: lackluster dependency management (versioning, pinning, distribution), slow and costly feedback loops (no typing, weak tests, few checks before deploying), awkward syntaxes (adhoc-language-over-YAML, nested languages (shell in Helm in YAML), templating, complex variable systems), fucked-up modularity (implicitness with cascading imports, name-based behavior, no functions), lack of tooling (LSP for navigation, refactoring, linting)
 * What about patching (layers) ?
+* My personal gut feeling is that the appropriate way to factorize code and distribute common building blocks is through templates, i.e. basic, copy-pastable, forkable components.
+  * En l'état, ça rend difficile l'intégration d'évolutions des composants dans le code consommateur. Il y a donc un besoin d'outillage et de pratiques pour rendre ça possible.
+  * Ceci dit, je pense que c'est un problème sur-côté. La plupart des évolution dans le code d'infrastructure ne sont pas des améliorations qui concerne les use cases supportés (c'est à dire nous) mais des gains de flexibilités pour supporter de nouveaux use cases (c'est à dire qui par définition ne nous concernent pas). Ainsi, on a tendance à mettre à jour nous modules Terraform ou nos charts Helm sans autre buts que "rester à jour"
+  * Par contre c'est un problème dans d'autres contextes. Par exemple dans le monde Kubernetes, maintenir ses Charts Helm à jour est important pour plusieurs raisons:
+    * L'infrastructure sous-jacente évolue
+      * C'est peu vrai pour un rôle Ansible (Linux reste stable)
+      * Moyennement vrai pour un module Terraform (les APIs de cloud provider sont plus ou moins stables suivant les providers, et des évolutions sont rarement transparente pour l'architecture et ne peuvent donc pas se résoudre de manière transparentes avec un bump de version. Il peut y avoir des changements cassants qui nécessitent4 90 des migrations)
+      * Assez vrai pour des Charts Helm (les APIs Kubernetes évoluent sans pour autant affecter profondément l'architecture, principalement au travers de renommages et de changements backward compatibles)
+    * l'API est complexe, la plupart des Charts ne l'utilise pas à 100%. On aura des des évolutions pour réduire les privilèges inutilement accordés à nos applications par exemple
+    * La version et la configuration de l'application peuvent faire partie intégrante du composant d'infrastructure (par opposition à un composant pour qui ces éléments seraient opaques et qui se contenterait de faire passe-plat), et ces éléments évoluent régulièrement
+    * L'application et l'infrastructure peuvent être couplés, par exemple les droits (RBAC) accordés au service account d'un conroller sur Kubernetes
 
 ## Infrastructure as Glue
 
