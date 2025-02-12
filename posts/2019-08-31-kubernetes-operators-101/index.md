@@ -130,7 +130,7 @@ While these practices tend to be democratized in Dev teams, they are currently n
 * C'est compliqué à tester
 * Many idiosyncrasies, and footguns when writing controllers
 
-# What's next?
+## What's next?
 
 There is still much to be said about the internals of an operator. If you want to learn more, I recommend reading the [Programming Kubernetes](https://www.oreilly.com/library/view/programming-kubernetes/9781492047094) book and writing your own (toy) operators.
 
