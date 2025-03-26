@@ -149,8 +149,9 @@ Horror stories vécues, conséquences d'une mentalité (programmation) en décal
 * Pareil pour Ansible qui est un outil avec une forte ADN sysadmin. Faire scaler le code des modules est un afterthought. Pas/peu de test, pas/peu de framework
 * Les abstractions sont donc dépendantes du bon fonctionnement de l'outil et s'effondrent souvent quand ce n'est pas le cas. Toute complexité ajoutée par dessus rend plus difficile de débogger les problèmes issus de fondations fragiles
 
-## Infra as software
+## Infrastructure as software
 
+* a.k.a. Infrastructure from Code
 Link to [Brian Grant's to Generating configuration using general-purpose programming languages](https://itnext.io/generating-configuration-using-general-purpose-programming-languages-19230a2c2573)
 
 * to me its more marketing than anything else. Both are DSLs. While there are some real advantages to either, and probably some good reason to prefer one over the other for specific use cases, I am convinced the difference is overdone. It is all about edge cases, the core of the tool work the same and doesn't change the way it's used. Choosing IaS doesn't diminish any broad limitation. It is mostly a matter of taste, thus the only good way is to chose one and stick to it.

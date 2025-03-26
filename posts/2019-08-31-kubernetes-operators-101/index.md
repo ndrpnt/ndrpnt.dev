@@ -4,13 +4,22 @@ description: "Kubernetes Operators: Why, How, What?"
 date: 2019-08-31
 ---
 
-Kubernetes is highly extensible and you may already be familiar with some of the [available mechanisms](https://kubernetes.io/docs/concepts/extend-kubernetes/extend-cluster/#extension-points). This post will introduce you to the [Operator](https://kubernetes.io/docs/concepts/extend-kubernetes/operator/) concept and provide an overview of what’s at your disposal to write one.
+Kubernetes is highly extensible
+and you may already be familiar with some of the [available mechanisms][kube-extension].
+This post will introduce you to the [Operator][kube-operator] concept.
+Another one will follow with an overview of what’s at your disposal to write one.
 
-This article assumes basic knowledge of Kubernetes' inner workings. The [official Kubernetes documentation](https://kubernetes.io/docs/concepts/overview/components/) is a great starting point to learn about these.
+This article assumes basic knowledge of Kubernetes' inner workings.
+The [official Kubernetes documentation][kube-components]
+is a great starting point to learn about these.
 
 ## Operators: Off-the-Shelf Managed Services
 
-Operators are extensions to the Kubernetes API that seek to automate the management of an application. Like human operators, Kubernetes operators have deep operational knowledge and usually handle deployment, scaling, upgrade, as well as recovery from common failures.
+Operators are extensions to the Kubernetes API
+that seek to automate the management of an application.
+Like human operators,
+Kubernetes operators have deep operational knowledge
+and usually handle deployment, scaling, upgrade, as well as recovery from common failures.
 
 > Kubernetes is a platform for building platforms. It's a better place to start; not the endgame.
 >
@@ -135,3 +144,8 @@ While these practices tend to be democratized in Dev teams, they are currently n
 There is still much to be said about the internals of an operator. If you want to learn more, I recommend reading the [Programming Kubernetes](https://www.oreilly.com/library/view/programming-kubernetes/9781492047094) book and writing your own (toy) operators.
 
 [^1]: Like many words, operator had seen it meaning evolve over time, following shifts in technology and marketing. Originally, operators used to describe a collection of CustomResourceDefinitions and controllers that "make it easy to manage complex stateful application". TODO and as Kubernetes-native applications, building on CRD and custom controllers. that make it easy to manage complex **stateful applications** on top of Kubernetes, building on CRD and controllers. KubernetesHistoriquement je crois qu'operator est un terme inventé par coreOS et qui designe "un ensemble de CRD et les controllers associées qui permettent d'opérer une application stateful". C'était une définition restrictive que coreOS/RedHat a ensuite petit à petit élargit, pour construire sur son succès (operatorhub, operator framework, etc). Controller is used to describe both the pattern and a program implementing that pattern. Controllers (the programs) can be custom or part of Kubernetes. Broadly speaking, a controller is any program that start a watch auprès de l'api-server and Ça n'a pas besoin d'être lié à une CRD, tu peux écrire un controller qui injecte un sidecar à tous tes pods par exemple, ou bien qui réplique tous les secret ayant une certaine annotation. Mais bon au fil du temps, les termes deviennent trop petits, sont dilués par les marketeux et aujourd'hui on ne fait plus trop la diff (ce qui n'est pas grave du tout soit dit en passant). The first operator was etcd operator, with the dream of Kubernetes self-managing it's own etcd cluster. The operator was later abandonned as it is so complex to fully autonomously manage an etcd cluster.
+
+
+[kube-extension]: https://kubernetes.io/docs/concepts/extend-kubernetes/extend-cluster/#extension-points
+[kube-operator]: https://kubernetes.io/docs/concepts/extend-kubernetes/operator/
+[kube-components]: https://kubernetes.io/docs/concepts/overview/components/
