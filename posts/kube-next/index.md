@@ -78,6 +78,9 @@ SDKs are available for numerous languages, e.g. [Elixir](https://github.com/cory
 
 [Reconciler.io](https://github.com/reconcilerio/runtime), opinionated framework built on controller-runtime. Strong focus on unit testing.
 
+[`krt`](https://github.com/istio/istio/blob/master/pkg/kube/krt/README.md),
+experimental framework for building declarative controllers, used in Istio.
+
 ### Libraries
 
 [Client-go](https://github.com/kubernetes/client-go) is the official Go Kubernetes client. It is used in sample-controller and Kubernetes core. It implements a caching mechanism, which drastically reduces direct reads from the kube-apiserver.
