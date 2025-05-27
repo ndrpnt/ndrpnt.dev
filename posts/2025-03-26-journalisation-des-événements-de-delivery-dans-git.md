@@ -1,5 +1,5 @@
 ---
-title: Journalisation des événements de delivery dans Git
+title: "[fr] Journalisation des événements de delivery dans Git"
 description: |
   Au détour d'une discussion avec un collègue
   sur le calcul des métriques DORA,
