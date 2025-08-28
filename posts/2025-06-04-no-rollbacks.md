@@ -32,3 +32,9 @@ It should of course be possible to temporarily disengage the Git <-> live infra 
 Biased research mostly confirm that intuition:
 
 * https://octopus.com/blog/automatic-rollbacks-last-resort
+
+Why am I writing this ? While this might all sound obvious, many deployment tools offer first-class rollback support, with associated logic and complexity.
+
+* Kubernetes deployments, statefulsets, and daemonsets resources support rollback with `kubectl rollout undo`. Consistency with associated resources like configmaps, and secrets have to be manually ensured.
+* Argo CD has first-class rollback support, while Flux CD does not.
+* Notably, Terraform does not support rollbacks. I've never personally needed that functionality, and, considering how misunderstood the state/code/real-world is, I am glad it was omitted.

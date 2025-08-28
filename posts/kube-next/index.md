@@ -81,6 +81,8 @@ SDKs are available for numerous languages, e.g. [Elixir](https://github.com/cory
 [`krt`](https://github.com/istio/istio/blob/master/pkg/kube/krt/README.md),
 experimental framework for building declarative controllers, used in Istio.
 
+[controller-idioms](https://github.com/authzed/controller-idioms), a collection of generic libraries that complement and extend controller-runtime to implement best practices for controllers.
+
 ### Libraries
 
 [Client-go](https://github.com/kubernetes/client-go) is the official Go Kubernetes client. It is used in sample-controller and Kubernetes core. It implements a caching mechanism, which drastically reduces direct reads from the kube-apiserver.
