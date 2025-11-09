@@ -47,3 +47,5 @@ _note sur l'offboarding et la rotation de clé de chiffrement : une fois qu'une
 * Encrypting with each member's public key makes the `git` history only accessible up to the date of joining the team
 * Encrypting with a single team-wide key requires sharing a private key between members and makes offboarding marginally less secure (leaving members can keep the key)
 * In all cases, the deployment tool likely needs a keypair of its own, which will be accessible to all members of the team
+
+TODO: mettre ces propositions à l'épreuve des requirements suivants: https://youtu.be/5Af1f1IxO7E?si=1WFr0RUaptDLDp5M
