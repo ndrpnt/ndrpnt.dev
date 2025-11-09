@@ -2,9 +2,9 @@
 
 This article is about the different strategies to manage static secrets in an infrastructure codebase. This includes API keys, database password, etc. referenced in Kubernetes manifests or Terraform code.
 
-I'll deliberately not aborder dynamic secrets and more generally strategies that involve making the application aware (directly or through a sidecar) of how secrets are managed. E.g. system that rely on regularly rotated short-lived secrets, systems that ensure sensible values are never written to disk, or systems that rely on workload identity to avoid credentials altogether.
+I'll deliberately not tackle dynamic secrets and more generally strategies that involve making the application aware (directly or through a sidecar) of how secrets are managed. E.g. system that rely on regularly rotated short-lived secrets, systems that ensure sensible values are never written to disk, or systems that rely on workload identity to avoid credentials altogether.
 
-Those are preferable precisely because you reduce the number of long-lived, stored in multiple places, credentials, and thus avoid the problem I am talking about. However these strategies might be complex or impossible to setup depending of your infrastructure provider, and the maturity of your organisation as a whole.
+Those are preferable precisely because you reduce the number of long-lived credentials, and thus avoid the problem I am talking about. However these strategies might be complex or impossible to setup depending of your infrastructure provider, and the maturity of your organisation as a whole.
 
 In my arguably very limited experience, I have seen two ways of managing secrets in infrastructure codebases:
 
