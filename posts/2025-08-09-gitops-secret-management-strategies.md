@@ -2,7 +2,7 @@
 
 This article is about the different strategies to manage static secrets in an infrastructure codebase. This includes API keys, database password, etc. referenced in Kubernetes manifests or Terraform code.
 
-I'll deliberately not tackle dynamic secrets and more generally strategies that involve making the application aware (directly or through a sidecar) of how secrets are managed. E.g. system that rely on regularly rotated short-lived secrets, systems that ensure sensible values are never written to disk, or systems that rely on workload identity to avoid credentials altogether.
+I'll deliberately not tackle dynamic secrets and more generally strategies that involve making the application aware (directly or through a sidecar) of how secrets are managed. E.g. system that rely on regularly rotated short-lived secrets, or systems that rely on workload identity to avoid credentials altogether.
 
 Those are preferable precisely because you reduce the number of long-lived credentials, and thus avoid the problem I am talking about. However these strategies might be complex or impossible to setup depending of your infrastructure provider, and the maturity of your organisation as a whole.
 
@@ -49,3 +49,43 @@ _note sur l'offboarding et la rotation de clé de chiffrement : une fois qu'une
 * In all cases, the deployment tool likely needs a keypair of its own, which will be accessible to all members of the team
 
 TODO: mettre ces propositions à l'épreuve des requirements suivants: https://youtu.be/5Af1f1IxO7E?si=1WFr0RUaptDLDp5M
++ ability to add a social component security, by requiring X out of Y keys to decrypt a secret
++ ability to share secrets between humans
+
+---
+
+# Static Secret Management Strategies
+
+## Step 1: Don't
+
+* In modern architecture it is often possible to avoid using long-lived secrets altogether
+* No matter how you handle static credentials, any human or application that has had access to a secret. Copy it, share it, leak it. All that without auditing
+* For you must work on your ability to rotate them
+
+### Workload Identity
+
+* No credentials
+* Centralise authorization
+
+### Secret Manager
+
+* Integrates with other services (databases, APIs, etc.) and generates dynamic, short-lived credentials to access them.
+* Can be considered stateless for some use cases: administrators _configure_ the integratation with other services, and users request a dynamically-generated value. If unplanned secret rotation is not acceptable, a secret manager has to be considered a stateful application the sense that it does not store long-lived data,
+* Centralise authorization
+
+## Secret Store
+
+* Stateful, durably stores static secrets
+* Mostly just a KV store with an emphasis on security: encryption, granular access control, versioning, policies (conditions, single-time access, etc.) audit, etc.
+* The code contains an indirection, and the store. Both have to be kept consistent.
+* One needs to work on data durability: that additional, stateful, component must be backed-up and/or replicated in multiple locations, and ideally providers.
+* The distinction between secret _store_ and secret _manager_ is somewhat idiosyncratic, as most products combine features of both. Nevertheless I think making this distinction helps building a clearer mental model.
+
+## KMS
+
+## Other considerations
+
+Related, but mostly orthogonal considerations:
+
+* Ensure sensible values are never written to disk, 
+* Ensure sensible values are [not stored in environment variables](https://cheatsheetseries.owasp.org/cheatsheets/Secrets_Management_Cheat_Sheet.html#51-injection-of-secrets-file-in-memory) to prevent them being accessible to other processes, or included in logs or system dumps.
