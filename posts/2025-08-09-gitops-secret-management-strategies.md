@@ -59,21 +59,24 @@ TODO: mettre ces propositions à l'épreuve des requirements suivants: https://y
 ## Step 1: Don't
 
 * In modern architecture it is often possible to avoid using long-lived secrets altogether
-* No matter how you handle static credentials, any human or application that has had access to a secret. Copy it, share it, leak it. All that without auditing
+* No matter how you handle static credentials, any human or application that has had access to a secret can share it, leak it, or keep a copy of it. That is even after revoking their access, and without any auditing.
 * For you must work on your ability to rotate them
+* In order to do without shared static secrets, you usually rely on a trusted third party. Application on both side of the communication have to either trust that third party or be managed by it.
 
 ### Workload Identity
 
 * No credentials
 * Centralise authorization
 
+## Concepts
+
 ### Secret Manager
 
 * Integrates with other services (databases, APIs, etc.) and generates dynamic, short-lived credentials to access them.
-* Can be considered stateless for some use cases: administrators _configure_ the integratation with other services, and users request a dynamically-generated value. If unplanned secret rotation is not acceptable, a secret manager has to be considered a stateful application the sense that it does not store long-lived data,
+* Can be considered stateless for some use cases: administrators _configure_ the integration with other services, and users request a dynamically-generated value. If unplanned secret rotation is not acceptable, a secret manager has to be considered like a stateful application, and appropriate measure must be taken to minimize data loss.
 * Centralise authorization
 
-## Secret Store
+### Secret Store
 
 * Stateful, durably stores static secrets
 * Mostly just a KV store with an emphasis on security: encryption, granular access control, versioning, policies (conditions, single-time access, etc.) audit, etc.
@@ -81,11 +84,20 @@ TODO: mettre ces propositions à l'épreuve des requirements suivants: https://y
 * One needs to work on data durability: that additional, stateful, component must be backed-up and/or replicated in multiple locations, and ideally providers.
 * The distinction between secret _store_ and secret _manager_ is somewhat idiosyncratic, as most products combine features of both. Nevertheless I think making this distinction helps building a clearer mental model.
 
-## KMS
+### Key Management Service (KMS)
+
+* In its simplest form, a KMS is a service that manages encryption keys and offers two operations: `encrypt` and `decrypt`.
+* Every secret access is authorized and logged.
+
+## Secret Store vs. KMS
+
+## SOPS
+
+* Data keys must be rotated regularly, and whenever someone is offboarded, with `sops rotate`. Otherwise someone that was authorized on the KMS could have kept a copy of the plaintext data key, and can decrypt secrets offline (without calling the KMS), _including new entries added using the same data key_.
 
 ## Other considerations
 
 Related, but mostly orthogonal considerations:
 
-* Ensure sensible values are never written to disk, 
+* Ensure sensible values are never written to disk
 * Ensure sensible values are [not stored in environment variables](https://cheatsheetseries.owasp.org/cheatsheets/Secrets_Management_Cheat_Sheet.html#51-injection-of-secrets-file-in-memory) to prevent them being accessible to other processes, or included in logs or system dumps.
