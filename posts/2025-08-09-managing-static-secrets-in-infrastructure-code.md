@@ -114,6 +114,11 @@ Credentials that are used by tools to access the KMS must be rotated regularly, 
 * SOPS is popular enough that there exists integration with many other ecosystems: [Nix](https://github.com/Mic92/sops-nix), [Flux CD](https://fluxcd.io/flux/guides/mozilla-sops/), [Ansible](https://docs.ansible.com/projects/ansible/latest/collections/community/sops/docsite/guide.html) to name a few.
 * SOPS can encrypt files of any type. For supported structured formats (currently YAML and JSON), SOPS is able to encrypt files on a field by field basis, which drastically improves Git diffs and let user inspect the content of a file without decrypting it (only values are encrypted, keys are not).
 * SOPS has no GUI. I think there is something missing here, maybe a read-only web UI that given a repo URL and some credentials can nicely let non-technical users browse the secrets they have access to.
+* Good to know: you don't want to `sops decrypt` and then `sops encrypt` a file.
+  That generates a new encryption key and muddies the diff,
+  and it also makes it easy to commit secrets in plaintext.
+  You should pretty much always use `sops edit` (with `$EDITOR` properly set)
+  or `sops set` commands to modify a SOPS-encrypted file
 
 ### Disaster recovery
 
@@ -215,5 +220,43 @@ And we can go deeper!
 If you want to require $X_A$ out of $Y_A$ keys from group $A$ and $X_B$ out of $Y_B$ keys from group $B$, you can achieve that with an indirection. Generate two intermediate keys, that you use to encrypt data with `shamir_threshold: 2`. Then, encrypt each intermediate key with its respective group's threshold.
 
 All in all, SSS is flexible enough to model many access policies.
+
+### Integrating SOPS with your editor
+
+I personally kept it simple with a single `sops $(fd --type file sops | fzf)` alias
+([fd](https://github.com/sharkdp/fd) is a alternative to `find`
+and [`fzf`](https://github.com/junegunn/fzf) lets you filter the matching files).
+
+If you use VSCode, you might be interested in setting `EDITOR=code --wait` in your `.bashrc`
+and creating a [task](https://code.visualstudio.com/docs/debugtest/tasks)
+that you can trigger by "building" the current file with `ctrl/cmd+shift+B`.
+
+```json
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "SOPS Edit",
+      "type": "shell",
+      // SOPS exits with status code 200 when no change are made.
+      "command": "sops edit ${file} || [ $? -eq 200 ]",
+      "presentation": {
+        "close": true,
+        "reveal": "never",
+        "panel": "dedicated"
+      },
+      "group": {
+        "kind": "build",
+        // Run by default with ctrl/cmd+shift+B.
+        "isDefault": "**.sops.*"
+      }
+    }
+  ]
+}
+```
+
+Of course you want to adapt it to match your way of managing credentials,
+e.g. by passing environment variables or source them in your `command`.
+I'm sure you can setup something similar in other editors as well.
 
 [^1]: Technically these functionalities are just a subset of the features of a KMS. They are often called Cryptography (or Encryption) as a Service. There is a lot more to [key management](https://en.wikipedia.org/wiki/Key_management) that I'm less familiar with, but that's beside the point of this post.
