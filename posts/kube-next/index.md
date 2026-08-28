@@ -66,22 +66,38 @@ Note that the project is currently unmaintained. Although there is [interest in 
 
 The [Rook](https://github.com/rook/rook) framework provides components for writing storage-related operators like software-defined storage solutions or (distributed) databases. Rook helps with common tasks like disks and directories discovery, and provides a consistent experience for the users.
 
-[Shell-operator](https://github.com/flant/shell-operator) is a tool for running event-driven scripts in a Kubernetes cluster. It provides an integration layer between Kubernetes cluster events and shell scripts by treating scripts as hooks triggered by events. The scripts then commonly issue `kubectl` commands.
+[Shell-operator](https://github.com/flant/shell-operator) is a tool for running event-driven scripts in a Kubernetes cluster. It provides an integration layer between Kubernetes cluster events and Python/Bash by treating scripts as hooks triggered by events. The scripts then commonly issue `kubectl` commands. It can be combined with [Addon-operator](https://github.com/flant/addon-operator) to integrate with Helm.
 
 [Krator](https://github.com/krator-rs/krator)
 
 [Mast](https://gitlab.com/ansi-services/mast)
 
-SDKs are available for numerous languages, e.g. [Elixir](https://github.com/coryodaniel/bonny), [.NET](https://github.com/buehler/dotnet-operator-sdk), [Java](https://github.com/java-operator-sdk/java-operator-sdk), [Rust](https://github.com/kube-rs/kube)
+[Kooper](https://github.com/spotahome/kooper) is lightweight alternative to Kubebuilder and Operator SDK.
+
+[Kubewebhook](https://github.com/slok/kubewebhook) is a Go framework to create admission webhooks.
+
+SDKs are available for numerous languages, e.g. [Elixir](https://github.com/coryodaniel/bonny), [.NET](https://github.com/dotnet/dotnet-operator-sdk), [Java/Kotlin](https://github.com/operator-framework/java-operator-sdk), [Rust](https://github.com/kube-rs/kube), [JavaScript/TypeScript](https://github.com/dot-i/k8s-operator-node)
 
 [Achilles SDK](https://github.com/reddit/achilles-sdk), opinionated, built on controller-runtime. build reconcilers in the form of FSM, provides logging, metrics, rate-limiting, etc. out of the box.
 
 [Reconciler.io](https://github.com/reconcilerio/runtime), opinionated framework built on controller-runtime. Strong focus on unit testing.
 
-[`krt`](https://github.com/istio/istio/blob/master/pkg/kube/krt/README.md),
+[Istio `krt`](https://github.com/istio/istio/blob/master/pkg/kube/krt/README.md),
 experimental framework for building declarative controllers, used in Istio.
 
 [controller-idioms](https://github.com/authzed/controller-idioms), a collection of generic libraries that complement and extend controller-runtime to implement best practices for controllers.
+
+[cdk8s-operator](https://github.com/cdk8s-team/cdk8s-operator) is a multi-language (Typescript, JavaScript, Python, Java, and Go) library and a command-line tool that allows you to create Kubernetes operators using [cdk8s](https://cdk8s.io/).
+
+[Controller Manager Library](https://github.com/gardener/controller-manager-library/tree/master), used in Gardener (?)
+
+[Wrangler](https://github.com/rancher/wrangler) is a framework to build controllers based on [Lasso](https://github.com/rancher/lasso).
+
+[Roperator](https://github.com/psFried/roperator) is a metacontroller-inspired toolkit to write operator in Rust.
+
+[baaah](https://github.com/acorn-io/baaah) is an abandoned alternative controller framework in Go.
+
+[operatorkit](https://github.com/giantswarm/operatorkit) is a deprecated opinionated Go framework.
 
 ### Libraries
 
@@ -93,9 +109,13 @@ experimental framework for building declarative controllers, used in Istio.
 
 controller-runtime also instruments several key metrics related to controllers and webhooks and makes them available via HTTP endpoint in prometheus metric format. At the time of writing, liveness and readiness probes are still a [work in progress](https://github.com/kubernetes-sigs/controller-runtime/pull/419).
 
-[Controller-tools](https://github.com/kubernetes-sigs/controller-tools) is used by both the Operator SDK and Kubebuilder internally, to scaffold and generate code.
+[Controller-tools](https://github.com/kubernetes-sigs/controller-tools) is used by both the Operator SDK and Kubebuilder internally, to scaffold and generate code. The Kubernetes project uses [code-generator](https://github.com/kubernetes/code-generator) to generate helpers from Go API types. [Kube code generator](https://github.com/slok/kube-code-generator) bundles both these tools for when you don't want to depend on the whole Kubebuilder machinery.
 
 The [operator-kit](https://github.com/rook/operator-kit) library was originally extracted from the Rook framework, and is now deprecated in favor of controller-runtime.
+
+[library-go](https://github.com/openshift/library-go), helpers for OpenShift controllers.
+
+[Flux CD runtime](https://github.com/fluxcd/pkg/tree/main/runtime), helpers for building controllers.
 
 ### Testing (?)
 
@@ -105,6 +125,11 @@ The [operator-kit](https://github.com/rook/operator-kit) library was originally 
 * [E2E Framework](https://github.com/kubernetes-sigs/e2e-framework)
 * [Sieve](https://github.com/sieve-project/sieve)
 * [Acto](https://github.com/xlab-uiuc/acto)
+
+### Orchestration
+
+* [Kubernetes Glue Operator](https://github.com/java-operator-sdk/kubernetes-glue-operator)
+* [kro](https://github.com/kubernetes-sigs/kro)
 
 # Conclusion
 
